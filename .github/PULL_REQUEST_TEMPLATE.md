@@ -1,4 +1,4 @@
-[contributing]: https://github.com/Ree6-Applications/Ree6-SQL/blob/master/.github/CONTRIBUTING.md
+[contributing]: https://github.com/Ree6-Applications/Ree6-Base/blob/master/.github/CONTRIBUTING.md
 
 ## Pull Request Etiquette
 

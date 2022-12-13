@@ -2,7 +2,7 @@ package de.presti.ree6.game.core;
 
 import de.presti.ree6.game.core.base.GameInfo;
 import de.presti.ree6.game.core.base.IGame;
-import de.presti.ree6.utils.others.RandomUtils;
+import de.presti.ree6.util.others.RandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;

@@ -1,4 +1,4 @@
-package de.presti.ree6.utils.others;
+package de.presti.ree6.util.others;
 
 import java.security.SecureRandom;
 import java.util.Base64;

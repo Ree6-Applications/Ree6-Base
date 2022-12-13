@@ -1,20 +1,20 @@
 package de.presti.ree6.util.data.resolver.implementation;
 
-import de.presti.ree6.util.data.resolver.base.IPrefixResolver;
+import de.presti.ree6.util.data.resolver.base.ILanguageResolver;
 
 /**
- * Default implementation for the Prefix Resolver.
+ * Default implementation for the Language Resolver.
  */
-public class DefaultPrefixResolver implements IPrefixResolver {
+public class DefaultLanguageResolver implements ILanguageResolver {
 
     /**
-     * Method used to resolve the Prefix of a Guild.
+     * Method used to resolve the Language of a Guild.
      *
-     * @param guildID The ID of the Guild.
-     * @return The Prefix of the Guild.
+     * @param guildId The ID of the Guild.
+     * @return The Language of the Guild.
      */
     @Override
-    public String resolvePrefix(String guildID) {
-        return "ree!";
+    public String resolveLanguage(long guildId) {
+        return "en-GB";
     }
 }

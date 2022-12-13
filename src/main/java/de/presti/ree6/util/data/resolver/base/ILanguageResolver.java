@@ -1,14 +1,14 @@
 package de.presti.ree6.util.data.resolver.base;
 
 /**
- * Interface used to resolve the Prefix of a Guild.
+ * Interface used to resolve the Language of a Guild.
  */
-public interface IPrefixResolver {
+public interface ILanguageResolver {
 
     /**
-     * Method used to resolve the Prefix of a Guild.
-     * @param guildID The ID of the Guild.
-     * @return The Prefix of the Guild.
+     * Method used to resolve the Language of a Guild.
+     * @param guildId The ID of the Guild.
+     * @return The Language of the Guild.
      */
-    String resolvePrefix(String guildID);
+    String resolveLanguage(long guildId);
 }

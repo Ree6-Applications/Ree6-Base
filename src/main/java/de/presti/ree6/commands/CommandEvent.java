@@ -1,7 +1,7 @@
 package de.presti.ree6.commands;
 
 import de.presti.ree6.language.LanguageService;
-import de.presti.ree6.main.Main;
+import de.presti.ree6.util.data.resolver.ResolverService;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -138,7 +138,7 @@ public class CommandEvent {
      * @param message the Message to reply with.
      */
     public void reply(MessageCreateData message) {
-        Main.getInstance().getCommandManager().sendMessage(message, getChannel(), getInteractionHook());
+        ResolverService.getCommandManager().sendMessage(message, getChannel(), getInteractionHook());
     }
 
     /**
@@ -148,7 +148,7 @@ public class CommandEvent {
      * @param deleteSecond the Seconds to delete the Message after.
      */
     public void reply(MessageCreateData message, int deleteSecond) {
-        Main.getInstance().getCommandManager().sendMessage(message, deleteSecond, getChannel(), getInteractionHook());
+        ResolverService.getCommandManager().sendMessage(message, deleteSecond, getChannel(), getInteractionHook());
     }
 
     /**

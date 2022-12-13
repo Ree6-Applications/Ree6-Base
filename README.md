@@ -6,11 +6,11 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T4AC652)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-SQL&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-SQL) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-SQL&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-SQL) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-SQL&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-SQL) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-SQL&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-SQL)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-Base&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-Base) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-Base&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-Base) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-Base&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-Base) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Ree6-Applications_Ree6-Base&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Ree6-Applications_Ree6-Base)
 </div>
 
-# What is Ree6-SQL?
-Ree6-SQL is a SQL-Module for the Ree6 Discord Bot / Webinterface. It is used to store and access data in a Database.
+# What is Ree6-Base?
+Ree6-Base is the base for the Discord bot Ree6. It contains the core functions.
 
 # Discord
 Ree6 has its own support Discord that you can join to help us reach the Partner status on Discord and you to get help!

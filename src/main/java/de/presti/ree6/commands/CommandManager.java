@@ -5,9 +5,8 @@ import de.presti.ree6.commands.exceptions.CommandInitializerException;
 import de.presti.ree6.commands.interfaces.Command;
 import de.presti.ree6.commands.interfaces.ICommand;
 import de.presti.ree6.language.LanguageService;
-import de.presti.ree6.sql.SQLSession;
-import de.presti.ree6.utils.data.ArrayUtil;
-import de.presti.ree6.utils.others.ThreadUtil;
+import de.presti.ree6.util.data.resolver.ResolverService;
+import de.presti.ree6.util.others.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -28,11 +27,13 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +49,11 @@ public class CommandManager {
     static final ArrayList<ICommand> commands = new ArrayList<>();
 
     /**
+     * HashMap used to store a users Ids, to keep them from spamming commands.
+     */
+    static final List<String> commandCooldown = new ArrayList<>();
+
+    /**
      * Constructor for the Command-Manager used to register every Command.
      *
      * @throws CommandInitializerException if an error occurs while initializing the Commands.
@@ -60,7 +66,7 @@ public class CommandManager {
     public CommandManager() throws CommandInitializerException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         log.info("Initializing Commands!");
 
-        Reflections reflections = new Reflections("de.presti.ree6.commands");
+        Reflections reflections = new Reflections(ClasspathHelper.staticClassLoader());
         Set<Class<? extends ICommand>> classes = reflections.getSubTypesOf(ICommand.class);
 
         for (Class<? extends ICommand> aClass : classes) {
@@ -213,7 +219,7 @@ public class CommandManager {
             if (slashCommandInteractionEvent != null) {
                 sendMessage(LanguageService.getByGuild(guild, "command.perform.cooldown"), 5, textChannel, slashCommandInteractionEvent.getHook().setEphemeral(true));
                 deleteMessage(message, slashCommandInteractionEvent.getHook().setEphemeral(true));
-            } else if (messageContent.toLowerCase().startsWith(SQLSession.getSqlConnector().getSqlWorker().getSetting(guild.getId(), "chatprefix").getStringValue().toLowerCase())) {
+            } else if (messageContent.toLowerCase().startsWith(ResolverService.getPrefixResolver().resolvePrefix(guild.getIdLong()).toLowerCase())) {
                 sendMessage(LanguageService.getByGuild(guild, "command.perform.cooldown"), 5, textChannel, null);
                 deleteMessage(message, null);
             }
@@ -235,12 +241,12 @@ public class CommandManager {
 
         // Check if this is a Developer build, if not then cooldown the User.
         if (!BotWorker.getVersion().isDebug()) {
-            ThreadUtil.createThread(x -> ArrayUtil.commandCooldown.remove(member.getUser().getId()), null, Duration.ofSeconds(5), false, false);
+            ThreadUtil.createThread(x -> commandCooldown.remove(member.getUser().getId()), null, Duration.ofSeconds(5), false, false);
         }
 
         // Add them to the Cooldown.
-        if (!ArrayUtil.commandCooldown.contains(member.getUser().getId()) && !BotWorker.getVersion().isDebug()) {
-            ArrayUtil.commandCooldown.add(member.getUser().getId());
+        if (!commandCooldown.contains(member.getUser().getId()) && !BotWorker.getVersion().isDebug()) {
+            commandCooldown.add(member.getUser().getId());
         }
 
         // Return that a command has been performed.
@@ -265,11 +271,11 @@ public class CommandManager {
         }
 
         // Check if the message starts with the prefix.
-        if (!messageContent.toLowerCase().startsWith(SQLSession.getSqlConnector().getSqlWorker().getSetting(guild.getId(), "chatprefix").getStringValue().toLowerCase()))
+        if (!messageContent.toLowerCase().startsWith(ResolverService.getPrefixResolver().resolvePrefix(guild.getIdLong()).toLowerCase()))
             return false;
 
         // Parse the Message and remove the prefix from it.
-        messageContent = messageContent.substring(SQLSession.getSqlConnector().getSqlWorker().getSetting(guild.getId(), "chatprefix").getStringValue().length());
+        messageContent = messageContent.substring(ResolverService.getPrefixResolver().resolvePrefix(guild.getIdLong()).length());
 
         // Split all Arguments.
         String[] arguments = messageContent.split(" ");
@@ -289,11 +295,11 @@ public class CommandManager {
         }
 
         // Check if the Command is blacklisted.
-        if (!SQLSession.getSqlConnector().getSqlWorker().getSetting(guild.getId(), "command_" + command.getClass().getAnnotation(Command.class).name().toLowerCase()).getBooleanValue() &&
+        /*if (!SQLSession.getSqlConnector().getSqlWorker().getSetting(guild.getId(), "command_" + command.getClass().getAnnotation(Command.class).name().toLowerCase()).getBooleanValue() &&
                 command.getClass().getAnnotation(Command.class).category() != Category.HIDDEN) {
             sendMessage(LanguageService.getByGuild(guild, "command.perform.blocked"), 5, textChannel, null);
             return false;
-        }
+        }*/
 
         // Parse the arguments.
         String[] argumentsParsed = Arrays.copyOfRange(arguments, 1, arguments.length);
@@ -322,10 +328,10 @@ public class CommandManager {
         }
 
         // Check if the command is blocked or not.
-        if (!SQLSession.getSqlConnector().getSqlWorker().getSetting(slashCommandInteractionEvent.getGuild().getId(), "command_" + command.getClass().getAnnotation(Command.class).name().toLowerCase()).getBooleanValue() && command.getClass().getAnnotation(Command.class).category() != Category.HIDDEN) {
+        /*if (!SQLSession.getSqlConnector().getSqlWorker().getSetting(slashCommandInteractionEvent.getGuild().getId(), "command_" + command.getClass().getAnnotation(Command.class).name().toLowerCase()).getBooleanValue() && command.getClass().getAnnotation(Command.class).category() != Category.HIDDEN) {
             sendMessage(LanguageService.getByGuild(slashCommandInteractionEvent.getGuild(), "command.perform.blocked"), 5, null, slashCommandInteractionEvent.getHook().setEphemeral(true));
             return false;
-        }
+        }*/
 
         // Perform the Command.
         command.onASyncPerform(new CommandEvent(command.getClass().getAnnotation(Command.class).name(), slashCommandInteractionEvent.getMember(), slashCommandInteractionEvent.getGuild(), null, textChannel, null, slashCommandInteractionEvent));
@@ -340,7 +346,7 @@ public class CommandManager {
      * @return true, if yes | false, if not.
      */
     public boolean isTimeout(User user) {
-        return ArrayUtil.commandCooldown.contains(user.getId()) && !BotWorker.getVersion().isDebug();
+        return commandCooldown.contains(user.getId()) && !BotWorker.getVersion().isDebug();
     }
 
     /**

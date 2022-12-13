@@ -1,4 +1,4 @@
-package de.presti.ree6.utils.data;
+package de.presti.ree6.util.data;
 
 import lombok.extern.slf4j.Slf4j;
 import org.simpleyaml.configuration.file.YamlFile;
@@ -17,12 +17,12 @@ public class Config {
     /**
      * The Configuration.
      */
-    private YamlFile yamlFile;
+    private static YamlFile yamlFile;
 
     /**
      * Initialize the Configuration.
      */
-    public void init() {
+    public static void init() {
 
         yamlFile = createConfiguration();
 
@@ -47,30 +47,6 @@ public class Config {
                     """);
             yamlFile.addDefault("config.version", "2.0.0");
             yamlFile.addDefault("config.creation", System.currentTimeMillis());
-            yamlFile.addDefault("hikari.sql.user", "root");
-            yamlFile.addDefault("hikari.sql.db", "root");
-            yamlFile.addDefault("hikari.sql.pw", "yourpw");
-            yamlFile.addDefault("hikari.sql.host", "localhost");
-            yamlFile.addDefault("hikari.sql.port", 3306);
-            yamlFile.addDefault("hikari.misc.storage", "sqlite");
-            yamlFile.addDefault("hikari.misc.storageFile", "storage/Ree6.db");
-            yamlFile.addDefault("hikari.misc.poolSize", 10);
-            yamlFile.addDefault("dagpi.apitoken", "yourdagpixyztokenhere");
-            yamlFile.addDefault("sentry.dsn", "yourSentryDSNHere");
-            yamlFile.addDefault("spotify.client.id", "yourspotifyclientid");
-            yamlFile.addDefault("spotify.client.secret", "yourspotifyclientsecret");
-            yamlFile.addDefault("twitch.client.id", "yourtwitchclientidhere");
-            yamlFile.addDefault("twitch.client.secret", "yourtwitchclientsecrethere");
-            yamlFile.addDefault("twitter.consumer.key", "yourTwitterConsumerKey");
-            yamlFile.addDefault("twitter.consumer.secret", "yourTwitterConsumerSecret");
-            yamlFile.addDefault("twitter.access.key", "yourTwitterAccessKey");
-            yamlFile.addDefault("twitter.access.secret", "yourTwitterAccessSecret");
-            yamlFile.addDefault("reddit.client.id", "yourredditclientid");
-            yamlFile.addDefault("reddit.client.secret", "yourredditclientsecret");
-            yamlFile.addDefault("instagram.username", "yourInstagramUsername");
-            yamlFile.addDefault("instagram.password", "yourInstagramPassword");
-            yamlFile.addDefault("youtube.api.key", "youryoutubeapikey");
-            yamlFile.addDefault("youtube.api.key2", "youryoutubeapikey2");
             yamlFile.addDefault("bot.tokens.release", "ReleaseTokenhere");
             yamlFile.addDefault("bot.tokens.beta", "BetaTokenhere");
             yamlFile.addDefault("bot.tokens.dev", "DevTokenhere");
@@ -93,7 +69,7 @@ public class Config {
     /**
      * Migrate from 1.10.0 config to 2.0.0 config.
      */
-    public void migrateOldConfig() {
+    public static void migrateOldConfig() {
         if (yamlFile.getString("config.version") == null) {
             Map<String, Object> resources = yamlFile.getValues(true);
             if (getFile().delete()) {
@@ -101,9 +77,6 @@ public class Config {
 
                 for (Map.Entry<String, Object> entry : resources.entrySet()) {
                     String key = entry.getKey();
-
-                    if (key.startsWith("mysql"))
-                        key = key.replace("mysql", "hikari.sql");
 
                     if (key.endsWith(".rel"))
                         key = key.replace(".rel", ".release");
@@ -124,7 +97,7 @@ public class Config {
      * Create a new Configuration.
      * @return The Configuration as {@link YamlFile}.
      */
-    public YamlFile createConfiguration() {
+    public static YamlFile createConfiguration() {
         try {
             return new YamlFile(getFile());
         } catch (Exception e) {
@@ -136,7 +109,7 @@ public class Config {
      * Get the Configuration.
      * @return The Configuration as {@link YamlFile}.
      */
-    public YamlFile getConfiguration() {
+    public static YamlFile getConfiguration() {
         if (yamlFile == null) {
             init();
         }
@@ -148,7 +121,7 @@ public class Config {
      * Get the Configuration File.
      * @return The Configuration File as {@link File}.
      */
-    public File getFile() {
+    public static File getFile() {
         return new File("config.yml");
     }
 

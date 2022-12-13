@@ -1,8 +1,14 @@
-package de.presti.ree6.util.data.resolver;
+package de.presti.ree6.util.data.resolver.base;
 
+/**
+ * Interface used to resolve the Prefix of a Guild.
+ */
 public interface IPrefixResolver {
 
-    String resolvePrefix(String guildID);
-
-
+    /**
+     * Method used to resolve the Prefix of a Guild.
+     * @param guildId The ID of the Guild.
+     * @return The Prefix of the Guild.
+     */
+    String resolvePrefix(long guildId);
 }

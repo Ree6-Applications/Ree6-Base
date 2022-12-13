@@ -2,7 +2,7 @@ package de.presti.ree6.bot;
 
 import de.presti.ree6.bot.version.BotState;
 import de.presti.ree6.bot.version.BotVersion;
-import de.presti.ree6.main.Main;
+import de.presti.ree6.util.data.Config;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -67,7 +67,7 @@ public class BotWorker {
      */
     public static void createBot(BotVersion version1) {
         version = version1;
-        token = Main.getInstance().getConfig().getConfiguration().getString(getVersion().getTokenPath());
+        token = Config.getConfiguration().getString(getVersion().getTokenPath());
         state = BotState.INIT;
 
         shardManager = DefaultShardManagerBuilder

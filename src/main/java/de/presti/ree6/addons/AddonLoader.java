@@ -1,7 +1,7 @@
 package de.presti.ree6.addons;
 
-import de.presti.ree6.main.Main;
-import de.presti.ree6.utils.data.ArrayUtil;
+import de.presti.ree6.util.others.RandomUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.simpleyaml.configuration.file.FileConfiguration;
 import org.simpleyaml.configuration.file.YamlConfiguration;
@@ -22,11 +22,17 @@ import java.util.zip.ZipInputStream;
 public class AddonLoader {
 
     /**
+     * The {@link AddonManager} used to store information about the Addons.
+     */
+    @Getter
+    private static AddonManager addonManager;
+
+    /**
      * Constructor should not be called, since it is a utility class that doesn't need an instance.
      * @throws IllegalStateException it is a utility class.
      */
-    private AddonLoader() {
-        throw new IllegalStateException("Utility class");
+    private AddonLoader(AddonManager addonManager) {
+        this.addonManager = addonManager;
     }
 
     /**
@@ -67,7 +73,7 @@ public class AddonLoader {
                         log.error("Couldn't pre-load the addon {}", file.getName());
                     }
 
-                    Main.getInstance().getAddonManager().loadAddon(addon);
+                    getAddonManager().loadAddon(addon);
                 } catch (Exception ex) {
                     // If the Methode loadAddon fails notify.
                     log.error("[AddonManager] Couldn't load the Addon {}\nException: {}", file.getName(), ex.getMessage());
@@ -106,7 +112,7 @@ public class AddonLoader {
                     // If it is the addon.yml then get the Data from it.
                     if (!entry.isDirectory() && entryName.equalsIgnoreCase("addon.yml")) {
                         // Create a temporal File to extract the Data from. I'm pretty sure there is a better way but as I said earlier didn't have the time for it.
-                        file = new File("addons/tmp/temp_" + ArrayUtil.getRandomString(9) + ".yml");
+                        file = new File("addons/tmp/temp_" + RandomUtils.randomString(9) + ".yml");
 
                         // Create a FileOutputStream of the temporal File and write every bite from the File inside the JAR.
                         try (FileOutputStream os = new FileOutputStream(file)) {
