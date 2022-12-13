@@ -1,6 +1,5 @@
 package de.presti.ree6.language;
 
-import de.presti.ree6.commands.CommandEvent;
 import de.presti.ree6.util.data.resolver.ResolverService;
 import de.presti.ree6.util.external.RequestUtility;
 import lombok.extern.slf4j.Slf4j;
@@ -151,22 +150,6 @@ public class LanguageService {
     /**
      * Called to get a specific String from the Guild specific Language file.
      *
-     * @param commandEvent the CommandEvent.
-     * @param key          the key of the String.
-     * @param parameter    the parameter to replace.
-     * @return the String.
-     */
-    public static @NotNull String getByEvent(@NotNull CommandEvent commandEvent, @NotNull String key, @Nullable Object... parameter) {
-        if (commandEvent.isSlashCommand()) {
-            return getByInteraction(commandEvent.getInteractionHook().getInteraction(), key, parameter);
-        } else {
-            return getByGuild(commandEvent.getGuild(), key, parameter);
-        }
-    }
-
-    /**
-     * Called to get a specific String from the Guild specific Language file.
-     *
      * @param commandEvent the GuildEvent.
      * @param key          the key of the String.
      * @param parameter    the parameter to replace.
@@ -201,10 +184,10 @@ public class LanguageService {
         if (guildId == -1) {
             resource = getDefault(key, parameter);
         } else {
-            resource = getByLocale(ResolverService.getLanguageResolver().resolveLanguage(guildId), key, parameter);
+            resource = getByLocale(ResolverService.getLanguageResolver().resolve(guildId), key, parameter);
         }
         resource = resource
-                .replace("{guild_prefix}", ResolverService.getPrefixResolver().resolvePrefix(guildId));
+                .replace("{guild_prefix}", ResolverService.getPrefixResolver().resolve(guildId));
 
         return resource;
     }
@@ -222,7 +205,7 @@ public class LanguageService {
 
         if (interaction.getGuild() != null)
             resource = resource
-                    .replace("{guild_prefix}", ResolverService.getPrefixResolver().resolvePrefix(interaction.getGuild().getIdLong()));
+                    .replace("{guild_prefix}", ResolverService.getPrefixResolver().resolve(interaction.getGuild().getIdLong()));
 
         return resource;
     }

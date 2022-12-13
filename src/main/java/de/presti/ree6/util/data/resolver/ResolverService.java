@@ -1,18 +1,10 @@
 package de.presti.ree6.util.data.resolver;
 
-import de.presti.ree6.commands.CommandManager;
-import de.presti.ree6.commands.exceptions.CommandInitializerException;
-import de.presti.ree6.util.data.resolver.base.IClassResolver;
-import de.presti.ree6.util.data.resolver.base.ILanguageResolver;
-import de.presti.ree6.util.data.resolver.base.IPrefixResolver;
-import de.presti.ree6.util.data.resolver.implementation.DefaultLanguageResolver;
-import de.presti.ree6.util.data.resolver.implementation.DefaultPrefixResolver;
+import de.presti.ree6.util.data.resolver.base.IObjectResolver;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Class used to store the Resolvers.
@@ -20,32 +12,18 @@ import java.lang.reflect.InvocationTargetException;
 @Slf4j
 public class ResolverService {
 
+
+    /**
+     * The Language Resolver.
+     */
+    @Getter(AccessLevel.PUBLIC)
+    @Setter(AccessLevel.PUBLIC)
+    private static IObjectResolver<String, Long> languageResolver = aLong -> "en-GB";
+
     /**
      * The Prefix Resolver.
      */
     @Getter(AccessLevel.PUBLIC)
     @Setter(AccessLevel.PUBLIC)
-    private static IPrefixResolver prefixResolver = new DefaultPrefixResolver();
-
-    /**
-     * The Language Resolver.
-     */
-    @Getter(AccessLevel.PUBLIC)
-    @Setter(AccessLevel.PUBLIC)
-    private static ILanguageResolver languageResolver = new DefaultLanguageResolver();
-
-    /**
-     * The Language Resolver.
-     */
-    @Getter(AccessLevel.PUBLIC)
-    @Setter(AccessLevel.PUBLIC)
-    private static CommandManager commandManager;
-
-    static {
-        try {
-            commandManager = new CommandManager();
-        } catch (Exception e) {
-            log.error("Could not initialize CommandManager!", e);
-        }
-    }
+    private static IObjectResolver<String, Long> prefixResolver = aLong -> "ree!";
 }
