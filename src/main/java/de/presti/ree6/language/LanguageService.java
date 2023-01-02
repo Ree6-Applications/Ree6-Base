@@ -1,5 +1,6 @@
 package de.presti.ree6.language;
 
+import de.presti.ree6.commands.CommandEvent;
 import de.presti.ree6.util.data.resolver.ResolverService;
 import de.presti.ree6.util.external.RequestUtility;
 import lombok.extern.slf4j.Slf4j;
@@ -56,75 +57,6 @@ public class LanguageService {
     }
 
     /**
-     * Called to download every Language file from the GitHub Repository.
-     */
-    public static void downloadLanguages() {
-        File languagePath = Path.of("languages/").toFile();
-        if (!languagePath.exists()) {
-            if (languagePath.mkdirs()) {
-                log.info("Created the language folder!");
-            } else {
-                log.error("Couldn't create the language folder!");
-            }
-        }
-
-        try {
-            RequestUtility.requestJson(RequestUtility.Request.builder().url("https://api.github.com/repos/Ree6-Applications/Ree6/contents/languages").build()).getAsJsonArray().forEach(jsonElement -> {
-                String language = jsonElement.getAsJsonObject().get("name").getAsString().replace(".yml", "");
-                String download = jsonElement.getAsJsonObject().get("download_url").getAsString();
-
-                Path languageFile = Path.of("languages/", language + ".yml");
-
-                if (!languageFile.toAbsolutePath().startsWith(languagePath.toPath().toAbsolutePath())) {
-                    log.info("Ignoring Language download, since Path Traversal has been detected!");
-                    return;
-                }
-
-                log.info("Downloading Language: {}", language);
-
-                try (InputStream inputStream = RequestUtility.request(RequestUtility.Request.builder().url(download).build())) {
-                    if (inputStream == null) return;
-
-                    String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-
-                    if (Files.exists(languageFile)) {
-
-                        log.info("Language file {} already exists! Will compare version!", language);
-                        YamlConfiguration newLanguageYaml = YamlConfiguration.loadConfigurationFromString(content);
-                        Language newLanguage = new Language(newLanguageYaml);
-                        Language oldLanguage = new Language(YamlConfiguration.loadConfiguration(languageFile.toFile()));
-                        if (oldLanguage.compareVersion(newLanguage)) {
-                            log.info("Language file {} is outdated! Will update!", language);
-                            if (!languageFile.toFile().delete()) {
-                                log.info("Failed to delete old Language file {}!", language);
-                            }
-
-                            // Not using YamlConfiguration#save, since that methods breaks the whole file somehow? Unsure why?
-                            Files.writeString(languageFile, content, StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW);
-
-                            log.info("Updated Language file {}!", language);
-
-                            if (languageResources.remove(oldLanguage.getDiscordLocale()) != null) {
-                                log.info("Removed old Language of {} from memory!", oldLanguage.getDiscordLocale().getLocale());
-                            }
-                        } else {
-                            log.info("Language file {} is up to date!", language);
-                        }
-                    } else {
-                        Files.copy(inputStream, languageFile);
-                    }
-                } catch (IOException exception) {
-                    log.error("An error occurred while downloading the language file!", exception);
-                }
-            });
-        } catch (Exception exception) {
-            log.error("An error occurred while downloading the language files!", exception);
-        }
-
-        initializeLanguages();
-    }
-
-    /**
      * Called to load a Language from a YamlConfiguration.
      *
      * @param discordLocale The DiscordLocale of the Language.
@@ -144,6 +76,22 @@ public class LanguageService {
             }
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Called to get a specific String from the Guild specific Language file.
+     *
+     * @param commandEvent the CommandEvent.
+     * @param key          the key of the String.
+     * @param parameter    the parameter to replace.
+     * @return the String.
+     */
+    public static @NotNull String getByEvent(@NotNull CommandEvent commandEvent, @NotNull String key, @Nullable Object... parameter) {
+        if (commandEvent.isSlashCommand()) {
+            return getByInteraction(commandEvent.getInteractionHook().getInteraction(), key, parameter);
+        } else {
+            return getByGuild(commandEvent.getGuild(), key, parameter);
         }
     }
 
