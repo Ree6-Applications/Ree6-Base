@@ -5,7 +5,9 @@ import de.presti.ree6.bot.version.BotVersion;
 import de.presti.ree6.language.LanguageService;
 import de.presti.ree6.menu.MenuEventListener;
 import de.presti.ree6.util.data.resolver.ResolverService;
+import lombok.Builder;
 
+@Builder
 class Ree6Base {
 
     BotVersion botVersion = BotVersion.DEVELOPMENT_BUILD;
@@ -30,39 +32,6 @@ class Ree6Base {
 
         if (loadLanguageSystem) {
             LanguageService.initializeLanguages();
-        }
-    }
-
-    public static class Builder {
-
-        final Ree6Base ree6Base;
-
-        public Builder() {
-            ree6Base = new Ree6Base();
-        }
-
-        public Builder botVersion(BotVersion botVersion) {
-            ree6Base.botVersion = botVersion;
-            return this;
-        }
-
-        public Builder enableMenuSystem() {
-            ree6Base.loadMenuSystem = true;
-            return this;
-        }
-
-        public Builder enableCommandSystem() {
-            ree6Base.loadCommandSystem = true;
-            return this;
-        }
-
-        public Builder enableLanguageSystem() {
-            ree6Base.loadLanguageSystem = true;
-            return this;
-        }
-
-        public Ree6Base build() {
-            return ree6Base;
         }
     }
 }
