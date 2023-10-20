@@ -8,13 +8,27 @@ import de.presti.ree6.util.data.resolver.ResolverService;
 import lombok.Builder;
 
 @Builder
-class Ree6Base {
+public class Ree6Base {
 
     BotVersion botVersion = BotVersion.DEVELOPMENT_BUILD;
     boolean loadMenuSystem;
     boolean loadCommandSystem;
     boolean loadLanguageSystem;
 
+    private Ree6Base() {
+        botVersion = BotVersion.DEVELOPMENT_BUILD;
+        loadMenuSystem = false;
+        loadCommandSystem = false;
+        loadLanguageSystem = false;
+    }
+    
+    private Ree6Base(BotVersion version, boolean menuSystem, boolean commandSystem, boolean languageSystem) {
+        botVersion = version;
+        loadMenuSystem = menuSystem;
+        loadCommandSystem = commandSystem;
+        loadLanguageSystem = languageSystem;
+    }
+    
     public void create() {
         BotWorker.createBot(botVersion);
 
