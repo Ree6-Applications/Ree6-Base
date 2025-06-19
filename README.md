@@ -1,3 +1,6 @@
+> [!CAUTION]
+> No longer maintained
+
 <div align="center">
 <img src="https://ree6.de/img/ree6.png" style="height: 500px;align: center;" alt="ree6"/>
 
